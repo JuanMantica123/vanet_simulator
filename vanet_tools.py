@@ -36,9 +36,8 @@ def plot_microclouds(microcloud_coords,microcloud_range,coords_x,coords_y):
         ax.add_artist(microcloud)
     plt.show()
 
-def store_microcloud_config(coordinates,coords_config_name,num_clouds,microcloud_range):
+def store_microcloud_config(microclouds_coords,coords_config_name):
     if not os.path.isfile(coords_config_name):
-        microclouds_coords = create_coords(coordinates,microcloud_range,num_microclouds=num_clouds)
         coords_df = pd.DataFrame(microclouds_coords,columns=[XCOLUMN_NAME,YCOLUMN_NAME])
         coords_df.to_csv(coords_config_name)
 
