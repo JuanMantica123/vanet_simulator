@@ -13,6 +13,9 @@ XCOLUMN_NAME = 'X'
 YCOLUMN_NAME = 'Y'
 
 def create_coords(coordinates,microcloud_range,num_microclouds=5):
+    #Below we will place the mircroclouds into the grid.Our algorithm for doing so works as follows. 
+    #We will get a random coordinate and see if that coordinate collides overlaps with any of the current coordinates for the microclouds,
+    # if it does not the position is added onto the array as a position for a microcloud
     microclouds_coords =  []
     while(len(microclouds_coords)<num_microclouds):
         random_coord = coordinates.sample().get_values()[0]
@@ -61,7 +64,7 @@ def plot_results(results_df):
     plt.xlabel('num_clouds')
     plt.ylabel('average_latency')
     df_without_nan = results_df.dropna()
-    plt.xlim(left=0,right = max(df_without_nan['average_latency']))
+    plt.xlim(left=0,right = max(df_without_nan['num_clouds']))
     plt.plot(df_without_nan['num_clouds'],df_without_nan['average_latency'])
 
 
@@ -143,6 +146,8 @@ class Node:
     def simulate(self,microclouds):
         logging.debug("Id {}".format(self.id))
         for index, row in self.df.iterrows():
+            if self.blocks_downloaded==len(self.blocks):
+                break
             x,y,time = row['vehicle_x'],row['vehicle_y'],row['timestep_time']
             logging.debug("Time {}".format(time))
             for microcloud in microclouds:
@@ -180,18 +185,24 @@ class Simulator:
 
     def simulation_by_number_of_clouds(self,micro_clouds,microcloud_range,step=1,bandwith=1,total_blocks=12):
         logging.getLogger().setLevel(logging.INFO)
-        stats = []
+        stats = defaultdict(list)
         for cloud_index in range(1,len(micro_clouds)+1,step):
             microclouds_coords = micro_clouds[:cloud_index]
             num_clouds = len(microclouds_coords)
-            logging.info("Starting simulation with {} num of clouds".format(cloud_index))
+            stats['num_clouds'].append(num_clouds)
+            logging.info("Setting up simulation with {} num of clouds".format(cloud_index))
             results = self.simulation(microclouds_coords,microcloud_range,bandwith=bandwith,total_blocks=total_blocks)
             stats_df = pd.DataFrame(results,columns=['id','blocks_received','latency'])
             blocks_received = stats_df['blocks_received']
-            block_percentage = blocks_received.mean()/total_blocks  
-            ninety_five_percentily = np.percentile(blocks_received,5)
+            block_percentage = blocks_received.mean()/total_blocks
+            stats['block_percentage'].append(block_percentage)  
+            ninety_five_percentile = np.percentile(blocks_received,5)
+            stats['ninety_five_percentile'].append(ninety_five_percentile)
             files_downloaded = len(stats_df[stats_df['blocks_received']==total_blocks])
+            stats['files_downloaded'].append(files_downloaded)
             average_latency = stats_df[stats_df['latency']>0]['latency'].mean()
-            stats.append([num_clouds,block_percentage,ninety_five_percentily,files_downloaded,average_latency])
+            stats['average_latency'].append(average_latency)
+            average_files_downloaded = files_downloaded/len(self.cars)
+            stats['average_files_downloaded'].append(average_files_downloaded)
         return stats
 
