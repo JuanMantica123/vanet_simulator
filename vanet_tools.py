@@ -67,6 +67,14 @@ def plot_results(results_df):
     plt.xlim(left=0,right = max(df_without_nan['num_clouds']))
     plt.plot(df_without_nan['num_clouds'],df_without_nan['average_latency'])
 
+def plot_important(results_df):
+    plt.plot(results_df['num_clouds'],results_df['ninety_five_percentile'],label='95th Percentile')
+    plt.plot(results_df['num_clouds'],results_df['block_percentage'],label='Average')
+    plt.xlabel('num_clouds')
+    plt.title('Simulation Results')
+    plt.legend(loc='best')
+    plt.show()
+
 
 class Block:
     def __init__(self,identifier,size):
@@ -196,7 +204,7 @@ class Simulator:
             blocks_received = stats_df['blocks_received']
             block_percentage = blocks_received.mean()/total_blocks
             stats['block_percentage'].append(block_percentage)  
-            ninety_five_percentile = np.percentile(blocks_received,5)
+            ninety_five_percentile = np.percentile(blocks_received,5)/total_blocks
             stats['ninety_five_percentile'].append(ninety_five_percentile)
             files_downloaded = len(stats_df[stats_df['blocks_received']==total_blocks])
             stats['files_downloaded'].append(files_downloaded)
