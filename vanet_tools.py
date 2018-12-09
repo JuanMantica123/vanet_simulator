@@ -70,8 +70,8 @@ def plot_results(results_df):
 def plot_important(results_df):
     plt.plot(results_df['num_clouds'],results_df['ninety_five_percentile'],label='95th Percentile')
     plt.plot(results_df['num_clouds'],results_df['block_percentage'],label='Average')
-    plt.xlabel('number of clouds')
-    plt.title('Simulation Results')
+    plt.xlabel('number of micro clouds')
+    plt.ylabel("% of downloaded partitions")
     plt.legend(loc='best')
     plt.show()
 
