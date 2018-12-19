@@ -1,0 +1,17 @@
+Loading net-file from 'pasubio_buslanes.net.xml'... done (14ms).
+Loading additional-files from 'pasubio_vtypes.add.xml'... done (1ms).
+Loading additional-files from 'pasubio_bus_stops.add.xml'... done (1ms).
+Loading additional-files from 'pasubio_busses.rou.xml'... done (9ms).
+Loading additional-files from 'pasubio_detectors.add.xml'... done (1ms).
+Loading additional-files from 'pasubio_tls.add.xml'... done (1ms).
+Loading done.
+Simulation started with time: 0.00
+Performance: 
+ Duration: 22756ms
+ Real time factor: 65.7848
+ UPS: 31443.970821
+Vehicles: 
+ Inserted: 3639 (Loaded: 3974)
+ Running: 532
+ Waiting: 0
+
